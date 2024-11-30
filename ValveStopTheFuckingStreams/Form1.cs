@@ -37,12 +37,20 @@ public partial class Form1 : Form
     
     private List<string> GetSteamContentSubDomains()
     {
-        var httpClient = new HttpClient();
-        var response = httpClient.GetAsync("https://crt.sh/?q=steamcontent.com&exclude=expired&group=none").Result;
-        var content = response.Content.ReadAsStringAsync().Result;
-        
-        var matches = Regex.Matches(content, SteamContentDomainPattern);
-        return matches.Select(x => x.Groups[1].Value).ToList();
+        try
+        {
+            var httpClient = new HttpClient();
+            var response = httpClient.GetAsync("https://crt.sh/?q=steamcontent.com&exclude=expired&group=none").Result;
+            var content = response.Content.ReadAsStringAsync().Result;
+
+            var matches = Regex.Matches(content, SteamContentDomainPattern);
+            return matches.Select(x => x.Groups[1].Value).ToList();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+            return new List<string>();
+        }
     }
     
     private List<string> GetBlockedDomains()
